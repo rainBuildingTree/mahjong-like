@@ -6,6 +6,10 @@ public class AimController : MonoBehaviour {
     EnemyObjectPool enemyObjectPool;
     Canvas userControlCanvas;
     Camera mainCam;
+    protected AttackObjectPool _attackPool;
+    protected Card _magicFrom;
+    protected MagicModel.ElementalAttribute _attackAttribute;
+    protected int _attackLevel;
 
 
 
@@ -20,6 +24,7 @@ public class AimController : MonoBehaviour {
 
     /* Member Variables *///==================================================
     float maxAttachDistance;
+    protected Transform _target;
 
 
 
@@ -29,6 +34,7 @@ public class AimController : MonoBehaviour {
         userControlCanvas = GetComponentInParent<Canvas>();
         enemyObjectPool = FindObjectOfType<EnemyObjectPool>();
         mainCam = FindObjectOfType<Camera>();
+        _attackPool = FindObjectOfType<AttackObjectPool>();
         maxAttachDistance = rectTransform.rect.width;
     }
     void Start() {
@@ -40,10 +46,21 @@ public class AimController : MonoBehaviour {
     }
     void OnDisable() {
         Cursor.visible = true;
+        _magicFrom = null;
     }
     void Update() {
         JumpToMousePosition();
         AttachToClosestEnemy();
+    }
+
+    public void RegisterMagicCard(Card card) {
+        _magicFrom = card;
+        _attackAttribute = (MagicModel.ElementalAttribute)card.Attribute;
+        _attackLevel = (_magicFrom is MergedCard) ? 2 : 1;
+    }
+    public bool IsTargetFound() {
+        _attackPool.EnableObject(_attackAttribute, _attackLevel, _target);
+        return _target != null;
     }
 
 
@@ -55,8 +72,10 @@ public class AimController : MonoBehaviour {
     }
     void AttachToClosestEnemy() {
         closestEnemy = enemyObjectPool.ClosestEnemy(mainCam.ScreenToWorldPoint(cachedMousePosition));
-        if (closestEnemy == null)
+        if (closestEnemy == null) {
+            _target = null;
             return;
+        }
 
         closestEnemyPositionOnCanvas = mainCam.WorldToScreenPoint(closestEnemy.position) / userControlCanvas.scaleFactor;
         currentMousePositionOnCanvas = cachedMousePosition / userControlCanvas.scaleFactor;
@@ -64,6 +83,10 @@ public class AimController : MonoBehaviour {
 
         if (closestEnemyDistanceOnCanvas < maxAttachDistance) {
             rectTransform.anchoredPosition = closestEnemyPositionOnCanvas;
+            _target = closestEnemy;
+        }
+        else {
+            _target = null;
         }
     }
 

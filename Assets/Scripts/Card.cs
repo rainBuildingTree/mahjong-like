@@ -70,13 +70,17 @@ IPointerDownHandler, IPointerUpHandler {
     // Drag and Drop Interface
     public void OnDrag(PointerEventData eventData) { }
     public void OnBeginDrag(PointerEventData eventData) {
-        if (!_deck.Merger.IsMergeMode)
+        if (!_deck.Merger.IsMergeMode) {
             _deck.Aim.gameObject.SetActive(true);
+            _deck.Aim.RegisterMagicCard(this);
+        }
     }
     public void OnEndDrag(PointerEventData eventData) {
         if (!_deck.Merger.IsMergeMode) {
+            bool isTargetFound = _deck.Aim.IsTargetFound();
             _deck.Aim.gameObject.SetActive(false);
-            _deck.Hand.UseCard(_indexInHand);
+            if (isTargetFound)
+                _deck.Hand.UseCard(_indexInHand);
         }
     }
 

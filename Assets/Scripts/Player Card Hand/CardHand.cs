@@ -64,11 +64,11 @@ public class CardHand : MonoBehaviour {
             if (_cards[i] == null)
                 continue;
             _cards[i].rectTransform.anchoredPosition = new Vector3(xPlacePosition, 0f, 0f);
-            xPlacePosition += _cards[i].UISize.x;
+            xPlacePosition += _cards[i].rectTransform.rect.width;
         }
         if (_cards[_size-1] == null)
             return;
-        xPlacePosition = _manager.RectTransform.rect.width - _cards[_size-1].UISize.x;
+        xPlacePosition = _manager.RectTransform.rect.width - _cards[_size-1].rectTransform.rect.width;
         _cards[_size-1].rectTransform.anchoredPosition = new Vector3(xPlacePosition, 0f, 0f);
     }
     public void Draw() {

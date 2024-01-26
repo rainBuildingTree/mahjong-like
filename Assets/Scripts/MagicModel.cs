@@ -16,24 +16,10 @@ public class MagicModel : MonoBehaviour {
         _level = level;
         _manager = GetComponent<AttackManager>();
         SetMagicImage();
+        _manager.SetParticleMaterial(_attribute);
     }
     protected void SetMagicImage() {
-        switch (_attribute) {
-            case ElementalAttribute.Pyro:
-                _manager.Renderer.color = Color.red;
-                break;
-            case ElementalAttribute.Anemo:
-                _manager.Renderer.color = Color.green;
-                break;
-            case ElementalAttribute.Hydro:
-                _manager.Renderer.color = Color.blue;
-                break;
-            case ElementalAttribute.None:
-                _manager.Renderer.color = Color.white;
-                break;
-            default:
-                break;
-        }
+        _manager.Renderer.sprite = _manager.SpriteStorage.GetSprite(_attribute);
     }
 
 }

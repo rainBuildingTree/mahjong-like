@@ -7,9 +7,10 @@ public class AttackObjectPool : MonoBehaviour {
     protected int _size = 14;
     protected AttackManager[] _pool;
     protected Vector3 _spawnPosition;
+    protected Transform _playerCharacter;
 
     void Awake() {
-        _spawnPosition = FindObjectOfType<PlayerCharacterManager>().transform.position;
+        _playerCharacter = FindObjectOfType<PlayerCharacterManager>().transform;
         Init();
     }
 
@@ -26,6 +27,12 @@ public class AttackObjectPool : MonoBehaviour {
             Debug.Log("NO TARGET!");
             return;
         }
+        if (target == _playerCharacter) {
+            Debug.Log("Player Enhancement!");
+            return;
+        }
+
+        _spawnPosition = (Vector2)_playerCharacter.position + Vector2.left;
         for (int i = 0; i < _size; ++i) {
             if (_pool[i].gameObject.activeInHierarchy)
                 continue;

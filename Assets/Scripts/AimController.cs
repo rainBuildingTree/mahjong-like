@@ -10,15 +10,17 @@ public class AimController : MonoBehaviour {
     protected Card _magicFrom;
     protected MagicModel.ElementalAttribute _attackAttribute;
     protected int _attackLevel;
+    protected Transform _playerCharacter;
 
 
 
     /* Cached Variables *///==================================================
     Vector2 cachedMousePosition;
-    Vector2 closestEnemyPositionOnCanvas;
+    Vector2 closestTargetPositionOnCanvas;
     Vector2 currentMousePositionOnCanvas;
+    Vector2 playerCharacterPosition;
     Transform closestEnemy;
-    float closestEnemyDistanceOnCanvas;
+    float closestTargetDistanceOnCanvas;
 
 
 
@@ -36,6 +38,8 @@ public class AimController : MonoBehaviour {
         mainCam = FindObjectOfType<Camera>();
         _attackPool = FindObjectOfType<AttackObjectPool>();
         maxAttachDistance = rectTransform.rect.width;
+        _playerCharacter = FindObjectOfType<PlayerCharacterManager>().transform;
+        playerCharacterPosition = _playerCharacter.position;
     }
     void Start() {
         gameObject.SetActive(false);
@@ -51,6 +55,7 @@ public class AimController : MonoBehaviour {
     void Update() {
         JumpToMousePosition();
         AttachToClosestEnemy();
+        AttachToPlayerCharacter();
     }
 
     public void RegisterMagicCard(Card card) {
@@ -77,17 +82,30 @@ public class AimController : MonoBehaviour {
             return;
         }
 
-        closestEnemyPositionOnCanvas = mainCam.WorldToScreenPoint(closestEnemy.position) / userControlCanvas.scaleFactor;
+        closestTargetPositionOnCanvas = mainCam.WorldToScreenPoint(closestEnemy.position) / userControlCanvas.scaleFactor;
         currentMousePositionOnCanvas = cachedMousePosition / userControlCanvas.scaleFactor;
-        closestEnemyDistanceOnCanvas = Mathf.Abs(Vector2.Distance(closestEnemyPositionOnCanvas, currentMousePositionOnCanvas));
+        closestTargetDistanceOnCanvas = Mathf.Abs(Vector2.Distance(closestTargetPositionOnCanvas, currentMousePositionOnCanvas));
 
-        if (closestEnemyDistanceOnCanvas < maxAttachDistance) {
-            rectTransform.anchoredPosition = closestEnemyPositionOnCanvas;
+        if (closestTargetDistanceOnCanvas < maxAttachDistance) {
+            rectTransform.anchoredPosition = closestTargetPositionOnCanvas;
             _target = closestEnemy;
         }
         else {
             _target = null;
         }
+    }
+    void AttachToPlayerCharacter() {
+        if (_playerCharacter == null)
+            return;
+        closestTargetPositionOnCanvas = mainCam.WorldToScreenPoint(_playerCharacter.position) / userControlCanvas.scaleFactor;
+        currentMousePositionOnCanvas = cachedMousePosition / userControlCanvas.scaleFactor;
+        closestTargetDistanceOnCanvas = Mathf.Abs(Vector2.Distance(closestTargetPositionOnCanvas, currentMousePositionOnCanvas));
+        
+        if (closestTargetDistanceOnCanvas < maxAttachDistance) {
+            rectTransform.anchoredPosition = closestTargetPositionOnCanvas;
+            _target = _playerCharacter;
+        }
+        
     }
 
 }

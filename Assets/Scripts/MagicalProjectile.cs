@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MagicalProjectile : MonoBehaviour {
@@ -7,6 +8,8 @@ public class MagicalProjectile : MonoBehaviour {
     protected Transform _target = null;
     protected float _gravitySpeed = 10f;
     protected float _rotateSpeed = 6f;
+    protected AttackManager _manager;
+    protected bool _isDestroyed = false;
 
     protected void FixedUpdate() {
         ChaseTarget();
@@ -14,18 +17,35 @@ public class MagicalProjectile : MonoBehaviour {
     protected void OnTriggerEnter2D(Collider2D other) {
         if (other.transform != _target)
             return;
-        gameObject.SetActive(false);
+        if (!_isDestroyed) {
+            _isDestroyed = true;
+            StartCoroutine(DelayedDestroy());
+        }
     }
     public void RegisterTarget(Transform target) {
         _target = target;
+        _manager.SetParticleEmissionEnable(true);
+        _manager.Renderer.enabled = true;
+        _isDestroyed = false;
+    }
+    public void RegisterManager(AttackManager manager) {
+        _manager = manager;
     }
     protected void ChaseTarget() {
-        if (_target == null)
+        if (_target == null || !_target.gameObject.activeInHierarchy)
             return;
         _vectorToTarget = ((Vector2)_target.position - (Vector2)transform.position).normalized;
         _vectorToRotate = new Vector2(_vectorToTarget.y, -_vectorToTarget.x);
         _moveVector = _vectorToTarget * _gravitySpeed + _vectorToRotate * _rotateSpeed;
         _moveVector *= Time.deltaTime;
-        transform.position += (Vector3)_moveVector;
+        float rotZ = Mathf.Atan2(-_vectorToTarget.y, -_vectorToTarget.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, rotZ);
+        transform.position += (Vector3)_moveVector; 
+    }
+    IEnumerator DelayedDestroy() {
+        _manager.Renderer.enabled = false;
+        _manager.SetParticleEmissionEnable(false);
+        yield return new WaitForSeconds(1f);
+        gameObject.SetActive(false);
     }
 }

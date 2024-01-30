@@ -49,7 +49,6 @@ ExportedObj/
 
 # PNG images
 /[Aa]ssets/[Ss]prites/*
-*.png
 
 # Unity3D generated meta files
 *.pidb.meta

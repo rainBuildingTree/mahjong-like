@@ -10,12 +10,12 @@ public class EnemyObjectPool : MonoBehaviour {
 
     int _currentRound = 0;
 
-    Enemy[] _enemyPool;
+    EnemyManager[] _enemyPool;
     int[] _roundLength = new int[3] { 10, 10, 10 };
-    Enemy.MonsterType[,] _roundData = new Enemy.MonsterType[3, 10] { // TEMPORARY ONLY!!!
-        {Enemy.MonsterType.RedSlime, Enemy.MonsterType.None, Enemy.MonsterType.None, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.None, Enemy.MonsterType.None, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.None, Enemy.MonsterType.None, Enemy.MonsterType.None},
-        {Enemy.MonsterType.RedSlime, Enemy.MonsterType.None, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.None, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.None, Enemy.MonsterType.None, Enemy.MonsterType.RedSlime },
-        {Enemy.MonsterType.RedSlime, Enemy.MonsterType.RedSlime, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.BlueSlime, Enemy.MonsterType.GreenSlime, Enemy.MonsterType.None, Enemy.MonsterType.RedSlime }
+    EnemyManager.MonsterType[,] _roundData = new EnemyManager.MonsterType[3, 10] { // TEMPORARY ONLY!!!
+        {EnemyManager.MonsterType.RedSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.None, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.None, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.None, EnemyManager.MonsterType.None},
+        {EnemyManager.MonsterType.RedSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.None, EnemyManager.MonsterType.RedSlime },
+        {EnemyManager.MonsterType.RedSlime, EnemyManager.MonsterType.RedSlime, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.BlueSlime, EnemyManager.MonsterType.GreenSlime, EnemyManager.MonsterType.None, EnemyManager.MonsterType.RedSlime }
     };
 
 
@@ -52,8 +52,8 @@ public class EnemyObjectPool : MonoBehaviour {
 
 
     /* PRIVATE METHODS *///==================================================
-    void EnableEnemyInPool(Enemy.MonsterType monsterType) {
-        if (monsterType == Enemy.MonsterType.None)
+    void EnableEnemyInPool(EnemyManager.MonsterType monsterType) {
+        if (monsterType == EnemyManager.MonsterType.None)
             return;
         for (int i = 0; i < PoolSize; ++i) {
             if (!_enemyPool[i].gameObject.activeInHierarchy) {
@@ -73,9 +73,9 @@ public class EnemyObjectPool : MonoBehaviour {
         return false;
     }
     void InitializeEnemyPool() {
-        _enemyPool = new Enemy[PoolSize];
+        _enemyPool = new EnemyManager[PoolSize];
         for (int i = 0; i < PoolSize; ++i) {
-            _enemyPool[i] = Instantiate(_enemyPrefab, transform).GetComponent<Enemy>();
+            _enemyPool[i] = Instantiate(_enemyPrefab, transform).GetComponent<EnemyManager>();
             _enemyPool[i].gameObject.SetActive(false);
         }
     }
@@ -86,7 +86,7 @@ public class EnemyObjectPool : MonoBehaviour {
     IEnumerator ProcessRound() {
         yield return new WaitForEndOfFrame();
         for (int i = 0; i < _roundLength[_currentRound]; ++i) {
-            Enemy.MonsterType monsterTypeToCreate = _roundData[_currentRound, i];
+            EnemyManager.MonsterType monsterTypeToCreate = _roundData[_currentRound, i];
             EnableEnemyInPool(monsterTypeToCreate);
             yield return new WaitForSeconds(1);
         }

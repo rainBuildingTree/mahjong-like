@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class EnemyManager : MonoBehaviour {
     /* ENUMS *///==================================================
     public enum MonsterType { RedSlime, GreenSlime, BlueSlime, None }
     public enum ElementalAttribute { Pyro, Anemo, Hydro, None }
@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour {
 
     SpriteRenderer _spriteRenderer;
     EnemyMovement _movement;
+    EnemyHealth _health;
 
     MonsterType _monsterType = MonsterType.None;
     ElementalAttribute _elementalAttribute = ElementalAttribute.None;
@@ -24,7 +25,12 @@ public class Enemy : MonoBehaviour {
     void Awake() {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _movement = GetComponent<EnemyMovement>();
+        _health = gameObject.AddComponent<EnemyHealth>();
     }
+    void OnEnable() {
+        _health.Init();
+    }
+    
 
 
 
@@ -44,16 +50,16 @@ public class Enemy : MonoBehaviour {
     void LoadEnemyData() {
         switch (_monsterType) {
             case MonsterType.RedSlime:
-                _elementalAttribute = ElementalAttribute.Pyro;
+                _health.SetWeakness(ElementalAttribute.Pyro);
                 break;
             case MonsterType.GreenSlime:
-                _elementalAttribute = ElementalAttribute.Anemo;
+                _health.SetWeakness(ElementalAttribute.Anemo);
                 break;
             case MonsterType.BlueSlime:
-                _elementalAttribute = ElementalAttribute.Hydro;
+                _health.SetWeakness(ElementalAttribute.Hydro);
                 break;
             default:
-                _elementalAttribute = ElementalAttribute.None;
+                _health.SetWeakness(ElementalAttribute.None);
                 break;
         }
     }

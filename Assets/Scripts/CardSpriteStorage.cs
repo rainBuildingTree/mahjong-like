@@ -29,6 +29,7 @@ public class CardSpriteStorage : ScriptableObject {
                 return null;
         }
     }
+
     public Sprite GetSprite(Card.ElementalAttribute attribute, MergedCard.MergeType type, int number) {
         switch (attribute) {
             case Card.ElementalAttribute.Pyro:

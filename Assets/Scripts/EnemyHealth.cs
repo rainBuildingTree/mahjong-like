@@ -7,9 +7,14 @@ public class EnemyHealth : MonoBehaviour {
     protected int _maxHealth = 100;
     protected float _criticalMultiplier = 4f;
     protected EnemyManager.ElementalAttribute _weakness;
+    protected EnemyManager _manager;
 
+    protected void Awake() {
+        _manager = GetComponent<EnemyManager>();
+    }
     public void Init() {
         _health = _maxHealth;
+        _manager.TmpText.text = _health.ToString();
     }
 
     public void Damage(int amount, MagicModel.ElementalAttribute elementalAttribute) {
@@ -21,6 +26,7 @@ public class EnemyHealth : MonoBehaviour {
         }
         if (_health <= 0)
             gameObject.SetActive(false);
+        _manager.TmpText.text = _health.ToString();
     }
     public void SetWeakness(EnemyManager.ElementalAttribute weakAttribute) {
         _weakness = weakAttribute;

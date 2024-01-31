@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class EnemyManager : MonoBehaviour {
     /* ENUMS *///==================================================
@@ -15,9 +16,12 @@ public class EnemyManager : MonoBehaviour {
     SpriteRenderer _spriteRenderer;
     EnemyMovement _movement;
     EnemyHealth _health;
+    TMP_Text _tmpText;
 
     MonsterType _monsterType = MonsterType.None;
     ElementalAttribute _elementalAttribute = ElementalAttribute.None;
+
+    public TMP_Text TmpText { get { return _tmpText; } }
     
 
 
@@ -26,6 +30,7 @@ public class EnemyManager : MonoBehaviour {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _movement = GetComponent<EnemyMovement>();
         _health = gameObject.AddComponent<EnemyHealth>();
+        _tmpText = GetComponentInChildren<TMP_Text>();
     }
     void OnEnable() {
         _health.Init();

@@ -19,6 +19,6 @@ public class DebugHelper : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.E))
             _target0.SetCurrentRound(2);
         else if (Input.GetKeyDown(KeyCode.R))
-            _target0.PlayRound();
+            _target0.PlayInfinitely();
     }
 }

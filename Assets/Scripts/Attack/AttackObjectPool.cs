@@ -8,9 +8,12 @@ public class AttackObjectPool : MonoBehaviour {
     protected AttackManager[] _pool;
     protected Vector3 _spawnPosition;
     protected Transform _playerCharacter;
+    protected int[] _elementalAtk;
+    protected AttackIndicator _attackIndicator;
 
-    void Awake() {
+    protected void Awake() {
         _playerCharacter = FindObjectOfType<PlayerCharacterManager>().transform;
+        _attackIndicator = FindObjectOfType<AttackIndicator>();
         Init();
     }
 
@@ -20,15 +23,19 @@ public class AttackObjectPool : MonoBehaviour {
             _pool[i] = Instantiate(_prefab, transform).GetComponent<AttackManager>();
             _pool[i].gameObject.SetActive(false);
         }
+        _elementalAtk = new int[4];
+        for (int i = 0; i < 4; ++i) {
+            _elementalAtk[i] = 25;
+            _attackIndicator.UpdateAttackDamage((MagicModel.ElementalAttribute)i, _elementalAtk[i]);
+        }
+        
     }
-
     public void EnableObject(MagicModel.ElementalAttribute attribute, int level, Transform target) {
         if (target == null) {
-            Debug.Log("NO TARGET!");
             return;
         }
         if (target == _playerCharacter) {
-            Debug.Log("Player Enhancement!");
+            EnhancePlayer(attribute, level, target);
             return;
         }
 
@@ -38,9 +45,17 @@ public class AttackObjectPool : MonoBehaviour {
                 continue;
             _pool[i].gameObject.SetActive(true);
             _pool[i].transform.position = _spawnPosition;
-            _pool[i].Init(attribute, level, target);
+            Debug.Log(_elementalAtk[(int)attribute]);
+            _pool[i].Init(attribute, level, target, _elementalAtk[(int)attribute]);
             return;
         }
     }
-    
+
+    protected void EnhancePlayer(MagicModel.ElementalAttribute attribute, int level, Transform target) {
+        _elementalAtk[(int)attribute] += (level < 2) ? 1 : 10;
+        _elementalAtk[3] += (level < 2) ? 0 : 4;
+        _attackIndicator.UpdateAttackDamage(attribute, _elementalAtk[(int)attribute]);
+        _attackIndicator.UpdateAttackDamage(MagicModel.ElementalAttribute.None, _elementalAtk[3]);
+        return;
+    }
 }

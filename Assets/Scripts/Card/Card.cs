@@ -14,6 +14,7 @@ IPointerDownHandler, IPointerUpHandler {
     /* Member Variables *///==================================================
     // Loaded Componenets
     [SerializeField] protected CardSpriteStorage _spriteStorage;
+    [SerializeField] protected Image _lockImage;
     protected Image imageComponent;
     protected RectTransform _rectTransform;
     protected PlayerDeckManager _deck;
@@ -29,6 +30,8 @@ IPointerDownHandler, IPointerUpHandler {
     protected int _indexInHand;
     protected Vector2 _uiSize;
     protected float magnificationFactor = 1.1f;
+    protected bool _isLocked = false;
+    protected bool _isDragging = false;
 
     // Public Get/Setter
     public RectTransform rectTransform { get { return _rectTransform; } }
@@ -70,17 +73,20 @@ IPointerDownHandler, IPointerUpHandler {
     // Drag and Drop Interface
     public void OnDrag(PointerEventData eventData) { }
     public void OnBeginDrag(PointerEventData eventData) {
-        if (!_deck.Merger.IsMergeMode) {
+        if (!_deck.Merger.IsMergeMode && !_isLocked) {
             _deck.Aim.gameObject.SetActive(true);
             _deck.Aim.RegisterMagicCard(this);
+            _isDragging = true;
         }
     }
     public void OnEndDrag(PointerEventData eventData) {
-        if (!_deck.Merger.IsMergeMode) {
+        if (!_deck.Merger.IsMergeMode && _isDragging) {
             bool isTargetFound = _deck.Aim.IsTargetFound();
-            _deck.Aim.gameObject.SetActive(false);
-            if (isTargetFound)
+            if (isTargetFound) {
                 _deck.Hand.UseCard(_indexInHand);
+            }
+            _deck.Aim.gameObject.SetActive(false);
+            _isDragging = false;
         }
     }
 
@@ -110,6 +116,10 @@ IPointerDownHandler, IPointerUpHandler {
         else {
             imageComponent.color = Color.white;
         }
+    }
+    public void SetLockActive(bool isActive) {
+        _isLocked = isActive;
+        _lockImage.gameObject.SetActive(isActive);
     }
 
 

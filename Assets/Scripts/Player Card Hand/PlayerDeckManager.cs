@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ public class PlayerDeckManager : MonoBehaviour {
     protected RectTransform _rectTransform;
     protected AimController _aim;
     protected MergeButton _mergeButton;
-    protected SliderController _cardGenSlider;
+    protected Cooldown _cooldown;
 
     public CardHand Hand { get { return _hand; } }
     public CardBank Bank { get { return _bank; } }
@@ -26,7 +27,7 @@ public class PlayerDeckManager : MonoBehaviour {
     public GameObject CardPrefab { get { return _cardPrefab; } }
     public GameObject MergedCardPrefab { get { return _mergedCardPrefab; } }
     public MergeButton MergeButton { get { return _mergeButton; } }
-    public SliderController CardGenSlider { get { return _cardGenSlider; } }
+    public Cooldown Cooldown { get { return _cooldown; } }
 
     protected void Awake() {
         _hand = gameObject.AddComponent<CardHand>();
@@ -36,7 +37,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _rectTransform = GetComponent<RectTransform>();
         _aim = FindObjectOfType<AimController>();
         _mergeButton = FindObjectOfType<MergeButton>();
-        _cardGenSlider = FindObjectOfType<SliderController>();
+        _cooldown = GetComponentInChildren<Cooldown>();
     }
     protected void Start() {
         Init();

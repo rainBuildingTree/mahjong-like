@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Versioning;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardHand : MonoBehaviour {
@@ -23,7 +22,6 @@ public class CardHand : MonoBehaviour {
         _cards = new Card[_size];
         CreateCards();
         Sort();
-        StartCoroutine(CardRegen());
     }
     public void CreateCards() {
         for (int i = 0; i < _size; ++i) {
@@ -104,23 +102,11 @@ public class CardHand : MonoBehaviour {
             _cards[index] = null;
             _numCards--;
         }
-        Sort();
-    }
-
-    protected IEnumerator CardRegen() {
-        yield return new WaitForEndOfFrame();
-        while (true) {
-            if (_numCards >= _size) {
-                yield return new WaitForEndOfFrame();
-                continue;
-            }
-            _manager.CardGenSlider.ResetTimer();
-            yield return new WaitForSeconds(3f);
-            while (_manager.Merger.IsMergeMode) {
-                yield return new WaitForSeconds(1f);
-            }
+        
+        while (_numCards < _cards.Length) {
             Draw();
         }
+        _manager.Cooldown.Activate();
     }
 
 }

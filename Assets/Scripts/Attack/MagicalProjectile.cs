@@ -19,7 +19,8 @@ public class MagicalProjectile : MonoBehaviour {
             return;
         if (!_isDestroyed) {
             _isDestroyed = true;
-            other.GetComponent<EnemyHealth>().Damage(25, _manager.Model.Attribute);
+            other.GetComponent<EnemyHealth>().Damage(_manager.AttackDamage, _manager.Model.Attribute);
+            Debug.Log("Damaged " + _manager.AttackDamage.ToString());
             StartCoroutine(DelayedDestroy());
         }
     }

@@ -5,7 +5,7 @@ using TMPro;
 
 public class EnemyManager : MonoBehaviour {
     /* ENUMS *///==================================================
-    public enum MonsterType { RedSlime, GreenSlime, BlueSlime, None }
+    public enum MonsterType { RedSlime, GreenSlime, BlueSlime, NormalSlime, None }
     public enum ElementalAttribute { Pyro, Anemo, Hydro, None }
 
 
@@ -32,9 +32,7 @@ public class EnemyManager : MonoBehaviour {
         _health = gameObject.AddComponent<EnemyHealth>();
         _tmpText = GetComponentInChildren<TMP_Text>();
     }
-    void OnEnable() {
-        _health.Init();
-    }
+
     
 
 
@@ -46,6 +44,7 @@ public class EnemyManager : MonoBehaviour {
         LoadEnemySprite();
     }
     public void InitializeEnemy() {
+        _health.Init();
         _movement.InitializeMovement();
     }
 

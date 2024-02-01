@@ -7,8 +7,10 @@ public class EnemyObjectPool : MonoBehaviour {
     [SerializeField] GameObject _enemyPrefab;
 
     const int PoolSize = 30;
+    protected float _spawnDelay = 5f;
 
     int _currentRound = 0;
+    protected bool _isPlayingInfinitely = false;
 
     EnemyManager[] _enemyPool;
     int[] _roundLength = new int[3] { 10, 10, 10 };
@@ -31,6 +33,12 @@ public class EnemyObjectPool : MonoBehaviour {
         if (IsRoundPlaying())
             return;
         StartCoroutine(ProcessRound());
+    }
+    public void PlayInfinitely() {
+        _isPlayingInfinitely = !_isPlayingInfinitely;
+        if (_isPlayingInfinitely) {
+            StartCoroutine(ProcessInfiniteRound());
+        }
     }
     public Transform ClosestEnemy(Vector2 position) {
         float closestDistance = float.MaxValue;
@@ -98,6 +106,19 @@ public class EnemyObjectPool : MonoBehaviour {
         _currentRound++;
         Debug.Log("Round Finished");
         yield return null;
+    }
+
+    IEnumerator ProcessInfiniteRound() {
+        yield return new WaitForEndOfFrame();
+        
+        while (_isPlayingInfinitely) {
+            EnemyManager.MonsterType monsterType = (EnemyManager.MonsterType)Random.Range(0, 4);
+            EnableEnemyInPool(monsterType);
+            yield return new WaitForSeconds(_spawnDelay);
+        }
+
+        yield return null;
+
     }
 
 

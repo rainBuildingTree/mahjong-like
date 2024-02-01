@@ -18,7 +18,7 @@ public class EnemyHealth : MonoBehaviour {
     }
 
     public void Damage(int amount, MagicModel.ElementalAttribute elementalAttribute) {
-        if ((int)_weakness == (int)elementalAttribute || elementalAttribute == MagicModel.ElementalAttribute.None) {
+        if (((int)_weakness == (int)elementalAttribute || elementalAttribute == MagicModel.ElementalAttribute.None) && _weakness != EnemyManager.ElementalAttribute.None) {
             _health -= (int)(amount * _criticalMultiplier);
         }
         else {
@@ -30,5 +30,8 @@ public class EnemyHealth : MonoBehaviour {
     }
     public void SetWeakness(EnemyManager.ElementalAttribute weakAttribute) {
         _weakness = weakAttribute;
+    }
+    public void SetMaxHealth(int maxHealth) {
+        _maxHealth = maxHealth;
     }
 }

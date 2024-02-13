@@ -14,24 +14,35 @@ public class EnemyHealth : MonoBehaviour {
     }
     public void Init() {
         _health = _maxHealth;
+        _manager.HitSpriteRenderer.enabled = false;
         _manager.TmpText.text = _health.ToString();
     }
 
     public void Damage(int amount, MagicModel.ElementalAttribute elementalAttribute) {
+        int finalDamage = 0;
         if (((int)_weakness == (int)elementalAttribute || elementalAttribute == MagicModel.ElementalAttribute.None) && _weakness != EnemyManager.ElementalAttribute.None) {
-            _health -= (int)(amount * _criticalMultiplier);
+            finalDamage = (int)(amount * _criticalMultiplier);
         }
         else {
-            _health -= amount;
+            finalDamage = amount;
         }
+        _health -= finalDamage;
+        _manager.TmpText.text = _health.ToString();
+        StartCoroutine(ProcessHitVisual(finalDamage));
         if (_health <= 0)
             gameObject.SetActive(false);
-        _manager.TmpText.text = _health.ToString();
     }
     public void SetWeakness(EnemyManager.ElementalAttribute weakAttribute) {
         _weakness = weakAttribute;
     }
     public void SetMaxHealth(int maxHealth) {
         _maxHealth = maxHealth;
+    }
+    IEnumerator ProcessHitVisual(int damageAmount) {
+        _manager.HitSpriteRenderer.enabled = true;
+        _manager.Movement.Knockback();
+        _manager.DamageIndicator.ShowDamage(transform.position, damageAmount);
+        yield return new WaitForSeconds(0.1f);
+        _manager.HitSpriteRenderer.enabled = false;
     }
 }

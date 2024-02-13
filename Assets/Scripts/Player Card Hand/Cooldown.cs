@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +21,7 @@ public class Cooldown : MonoBehaviour {
         StartCoroutine(ActivateCoolDown());
     }
     IEnumerator ActivateCoolDown() {
+        yield return new WaitForEndOfFrame();
         for (int i = 0; i < _manager.Hand.Cards.Length; ++i) {
             if (_manager.Hand.Cards[i] == null)
                 continue;
@@ -38,6 +38,10 @@ public class Cooldown : MonoBehaviour {
         }
         _text.enabled = false;
         _slider.gameObject.SetActive(false);
+        while (_manager.Hand.NumCards < _manager.Hand.Cards.Length) {
+            _manager.Hand.Draw();
+        }
+        _manager.Hand.GetRequiredCards();
     }
 
     IEnumerator ActivateTimer() {

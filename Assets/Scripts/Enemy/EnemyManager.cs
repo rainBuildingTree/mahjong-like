@@ -14,14 +14,19 @@ public class EnemyManager : MonoBehaviour {
     [SerializeField] Sprite[] _sprites;
 
     SpriteRenderer _spriteRenderer;
+    [SerializeField] SpriteRenderer _hitSpriteRenderer;
     EnemyMovement _movement;
     EnemyHealth _health;
     TMP_Text _tmpText;
+    DamageIndicator _damageIndicator;
 
     MonsterType _monsterType = MonsterType.None;
     ElementalAttribute _elementalAttribute = ElementalAttribute.None;
 
     public TMP_Text TmpText { get { return _tmpText; } }
+    public SpriteRenderer HitSpriteRenderer { get { return _hitSpriteRenderer; } }
+    public EnemyMovement Movement { get { return _movement; } }
+    public DamageIndicator DamageIndicator { get { return _damageIndicator; } }
     
 
 
@@ -31,6 +36,8 @@ public class EnemyManager : MonoBehaviour {
         _movement = GetComponent<EnemyMovement>();
         _health = gameObject.AddComponent<EnemyHealth>();
         _tmpText = GetComponentInChildren<TMP_Text>();
+        _damageIndicator = FindObjectOfType<DamageIndicator>();
+        _hitSpriteRenderer.enabled = false;
     }
 
     

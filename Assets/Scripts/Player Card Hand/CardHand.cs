@@ -1,17 +1,23 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardHand : MonoBehaviour {
     
     public const int NumTotalCardKind = 34;
+    protected const int NumCardKindPerAttribute = 9;
     protected PlayerDeckManager _manager;
     protected int _size;
     protected Card[] _cards;
+    protected List<int> _requiredCards = new List<int>();
     protected int _numCards;
+    protected int _unluckCount = 0;
 
     public int Size { get { return _size; } }
     public Card[] Cards { get { return _cards; } }
+    public int NumCards { get { return _numCards; } }
 
     protected void Awake() {
         _manager = GetComponent<PlayerDeckManager>();
@@ -30,6 +36,7 @@ public class CardHand : MonoBehaviour {
             _cards[i].RegisterDeck(_manager);
         }
         _numCards = _size;
+        GetRequiredCards();
     }
     public void Sort() { // Doesn't sort the last card
         for (int i = 1; i < _size-1; ++i) {
@@ -78,11 +85,12 @@ public class CardHand : MonoBehaviour {
                 break;
             }
         _cards[_size-1] = _manager.Bank.Withdraw();
-        _cards[_size-1].Initialize(Random.Range(0, NumTotalCardKind));
+        int luck = Random.Range(0, 2);
+        int randomCode = (luck < 1) ? Random.Range(0, NumTotalCardKind) : _requiredCards[Random.Range(0, _requiredCards.Count)];
+        _cards[_size-1].Initialize(randomCode);
         _numCards++;
         Sort();
         Place();
-
     }
     public void UseCard(int index) {
         if (index < 0 || index >= _size)
@@ -102,11 +110,49 @@ public class CardHand : MonoBehaviour {
             _cards[index] = null;
             _numCards--;
         }
+        _cards[index] = _cards[^1];
+        _cards[^1] = null;
+        Sort();
         
-        while (_numCards < _cards.Length) {
-            Draw();
-        }
+        _manager.TenpaiChecker.UpdateHandData();
+        List<int> tmp = _manager.TenpaiChecker.FindWaits();
+        if (tmp != null)
+            foreach (int i in tmp)
+                Debug.Log(i);
+        else
+            Debug.Log("NO TEN");
         _manager.Cooldown.Activate();
+    }
+    public void GetRequiredCards() {
+        _requiredCards.Clear();
+        for (int i = 0; i < _cards.Length-1; ++i) {
+            if (_cards[i] is MergedCard) continue;
+            if (_cards[i] == null) continue;
+            // (0) Case of Char cards which only accepts triplet to become a body
+            if (_cards[i].Attribute == Card.ElementalAttribute.Char) {
+                _requiredCards.Add(_cards[i].Code);
+                continue;
+            }
+            if (i+1 < _cards.Length-1)
+                if (_cards[i].Attribute == _cards[i+1].Attribute)
+                    // (3) Check whether there is a sequential body candidate (e.g. 12, 45, 67)
+                    if (_cards[i+1].Code - _cards[i].Code == 1) {
+                        if (_cards[i].Number != 1)
+                            _requiredCards.Add(_cards[i].Code-1);
+                        if (_cards[i+1].Number != 9)
+                            _requiredCards.Add(_cards[i+1].Code+1);
+                        continue;
+                    }
+                    // (4) Check whether there is a jumped body candidate (e.g. 13, 46, 68)
+                    else if (_cards[i+1].Code - _cards[i].Code == 2) {
+                        _requiredCards.Add(_cards[i].Code+1);
+                        continue;
+                    }
+            // (5) Case of isolated cards
+            _requiredCards.Add(_cards[i].Code);
+        }
+        _requiredCards = _requiredCards.Distinct().ToList();
+        _requiredCards.Sort();
     }
 
 }

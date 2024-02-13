@@ -112,7 +112,7 @@ public class EnemyObjectPool : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         
         while (_isPlayingInfinitely) {
-            EnemyManager.MonsterType monsterType = (EnemyManager.MonsterType)Random.Range(0, 4);
+            EnemyManager.MonsterType monsterType = (EnemyManager.MonsterType)Random.Range(0, 3);
             EnableEnemyInPool(monsterType);
             yield return new WaitForSeconds(_spawnDelay);
         }

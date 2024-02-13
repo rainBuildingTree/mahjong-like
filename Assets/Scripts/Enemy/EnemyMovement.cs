@@ -10,6 +10,10 @@ public class EnemyMovement : MonoBehaviour {
 
     List<Transform> waypoints;
 
+    protected float targetDistance;
+    protected float progressRate = 0f;
+    protected float _knockbackAmounnt = 0.01f;
+
 
 
     /* UNITY EVENT FUNCTIONS *///==================================================
@@ -39,6 +43,11 @@ public class EnemyMovement : MonoBehaviour {
     void JumpToFirstWaypoint() {
         transform.position = waypoints[0].position;
     }
+    public void Knockback() {
+        progressRate -= _knockbackAmounnt;
+        if (progressRate < 0f)
+            progressRate = 0f;
+    }
 
 
 
@@ -49,8 +58,8 @@ public class EnemyMovement : MonoBehaviour {
         foreach (Transform waypoint in waypoints) {
             Vector3 startPosition = transform.position;
             Vector3 targetPosition = waypoint.position;
-            float targetDistance = Vector3.Distance(startPosition, targetPosition);
-            float progressRate = 0f;
+            targetDistance = Vector3.Distance(startPosition, targetPosition);
+            progressRate = 0f;
 
             while (progressRate < 1f) {
                 progressRate = progressRate + Time.deltaTime * (MoveSpeed / targetDistance);

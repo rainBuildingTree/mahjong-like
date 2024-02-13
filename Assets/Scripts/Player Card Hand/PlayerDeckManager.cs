@@ -16,6 +16,7 @@ public class PlayerDeckManager : MonoBehaviour {
     protected AimController _aim;
     protected MergeButton _mergeButton;
     protected Cooldown _cooldown;
+    protected TenpaiChecker _tenpaiChecker;
 
     public CardHand Hand { get { return _hand; } }
     public CardBank Bank { get { return _bank; } }
@@ -28,6 +29,7 @@ public class PlayerDeckManager : MonoBehaviour {
     public GameObject MergedCardPrefab { get { return _mergedCardPrefab; } }
     public MergeButton MergeButton { get { return _mergeButton; } }
     public Cooldown Cooldown { get { return _cooldown; } }
+    public TenpaiChecker TenpaiChecker { get { return _tenpaiChecker; } }
 
     protected void Awake() {
         _hand = gameObject.AddComponent<CardHand>();
@@ -38,6 +40,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _aim = FindObjectOfType<AimController>();
         _mergeButton = FindObjectOfType<MergeButton>();
         _cooldown = GetComponentInChildren<Cooldown>();
+        _tenpaiChecker = gameObject.AddComponent<TenpaiChecker>();
     }
     protected void Start() {
         Init();
@@ -47,6 +50,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _bank.Init();
         _mergedBank.Init();
         _merger.Init();
+        _tenpaiChecker.Init(this);
     }
 
 }

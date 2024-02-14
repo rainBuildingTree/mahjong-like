@@ -27,6 +27,7 @@ public class EnemyManager : MonoBehaviour {
     public SpriteRenderer HitSpriteRenderer { get { return _hitSpriteRenderer; } }
     public EnemyMovement Movement { get { return _movement; } }
     public DamageIndicator DamageIndicator { get { return _damageIndicator; } }
+    public EnemyHealth Health { get { return _health; } }
     
 
 

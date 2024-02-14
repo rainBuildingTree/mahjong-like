@@ -56,6 +56,22 @@ public class EnemyObjectPool : MonoBehaviour {
             return null;
         return _enemyPool[closestEnemyIndex].transform;
     }
+    public Transform GetEnemyInAttribute(Card.ElementalAttribute attribute) {
+        float maxMovedDistance = float.MinValue;
+        int enemyIndex = -1;
+        for (int i = 0; i < PoolSize; ++i) {
+            if (!_enemyPool[i].gameObject.activeInHierarchy)
+                continue;
+            if ((int)_enemyPool[i].Health.Weakness == (int)attribute)
+                if (_enemyPool[i].transform.position.x > maxMovedDistance) {
+                    maxMovedDistance = _enemyPool[i].transform.position.x;
+                    enemyIndex = i;
+                }    
+        }
+        if (enemyIndex == -1)
+            return null;
+        return _enemyPool[enemyIndex].transform;
+    }
 
 
 

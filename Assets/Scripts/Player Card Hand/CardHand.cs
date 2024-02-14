@@ -36,7 +36,7 @@ public class CardHand : MonoBehaviour {
             _cards[i].RegisterDeck(_manager);
         }
         _numCards = _size;
-        _manager.HandAnalyzer.UpdateHandData();
+        _manager.HandAnalyser.UpdateHandData();
         GetRequiredCards();
     }
     public void Sort() { // Doesn't sort the last card
@@ -115,17 +115,16 @@ public class CardHand : MonoBehaviour {
         _cards[^1] = null;
         Sort();
         
-        _manager.HandAnalyzer.UpdateHandData();
-        int shanten = _manager.HandAnalyzer.CalculateShanten();
-        if (shanten == 0) {
-            _manager.SkipButton.gameObject.SetActive(true);
-            _manager.RiichiButton.gameObject.SetActive(true);
+        _manager.HandAnalyser.UpdateHandData();
+        int shanten = _manager.HandAnalyser.CalculateShanten();
+        if (shanten == 0 && !_manager.RiichiController.IsRiichi) {
+            _manager.RiichiController.SetRiichiableActive(true);
         }
         _manager.Cooldown.Activate();
     }
     public void GetRequiredCards() {
         _requiredCards.Clear();
-        _requiredCards = _manager.HandAnalyzer.FindMachi();
+        _requiredCards = _manager.HandAnalyser.FindMachi();
     }
 
 }

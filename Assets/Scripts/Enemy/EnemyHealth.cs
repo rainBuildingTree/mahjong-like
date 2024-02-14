@@ -9,6 +9,8 @@ public class EnemyHealth : MonoBehaviour {
     protected EnemyManager.ElementalAttribute _weakness;
     protected EnemyManager _manager;
 
+    public EnemyManager.ElementalAttribute Weakness { get { return _weakness; } }
+
     protected void Awake() {
         _manager = GetComponent<EnemyManager>();
     }

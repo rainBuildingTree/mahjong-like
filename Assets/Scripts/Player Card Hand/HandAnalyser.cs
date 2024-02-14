@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandAnalyzer : MonoBehaviour {
+public class HandAnalyser : MonoBehaviour {
     private PlayerDeckManager _manager;
     private int _numMaxShanten = 8;
     private int[] _handData;

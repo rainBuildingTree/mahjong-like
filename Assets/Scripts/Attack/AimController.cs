@@ -56,6 +56,7 @@ public class AimController : MonoBehaviour {
         _attackPool.EnableObject(_attackAttribute, _attackLevel, _target);
         return _target != null;
     }
+    
 
     protected void JumpToMousePosition() {
         cachedMousePosition = Input.mousePosition;

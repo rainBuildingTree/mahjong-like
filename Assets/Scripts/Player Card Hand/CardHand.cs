@@ -36,6 +36,7 @@ public class CardHand : MonoBehaviour {
             _cards[i].RegisterDeck(_manager);
         }
         _numCards = _size;
+        _manager.HandAnalyzer.UpdateHandData();
         GetRequiredCards();
     }
     public void Sort() { // Doesn't sort the last card
@@ -85,8 +86,8 @@ public class CardHand : MonoBehaviour {
                 break;
             }
         _cards[_size-1] = _manager.Bank.Withdraw();
-        int luck = Random.Range(0, 2);
-        int randomCode = (luck < 1) ? Random.Range(0, NumTotalCardKind) : _requiredCards[Random.Range(0, _requiredCards.Count)];
+        int luck = Random.Range(0, 3);
+        int randomCode = (luck < 2) ? Random.Range(0, NumTotalCardKind) : _requiredCards[Random.Range(0, _requiredCards.Count)];
         _cards[_size-1].Initialize(randomCode);
         _numCards++;
         Sort();
@@ -114,45 +115,17 @@ public class CardHand : MonoBehaviour {
         _cards[^1] = null;
         Sort();
         
-        _manager.TenpaiChecker.UpdateHandData();
-        List<int> tmp = _manager.TenpaiChecker.FindWaits();
-        if (tmp != null)
-            foreach (int i in tmp)
-                Debug.Log(i);
-        else
-            Debug.Log("NO TEN");
+        _manager.HandAnalyzer.UpdateHandData();
+        int shanten = _manager.HandAnalyzer.CalculateShanten();
+        if (shanten == 0) {
+            _manager.SkipButton.gameObject.SetActive(true);
+            _manager.RiichiButton.gameObject.SetActive(true);
+        }
         _manager.Cooldown.Activate();
     }
     public void GetRequiredCards() {
         _requiredCards.Clear();
-        for (int i = 0; i < _cards.Length-1; ++i) {
-            if (_cards[i] is MergedCard) continue;
-            if (_cards[i] == null) continue;
-            // (0) Case of Char cards which only accepts triplet to become a body
-            if (_cards[i].Attribute == Card.ElementalAttribute.Char) {
-                _requiredCards.Add(_cards[i].Code);
-                continue;
-            }
-            if (i+1 < _cards.Length-1)
-                if (_cards[i].Attribute == _cards[i+1].Attribute)
-                    // (3) Check whether there is a sequential body candidate (e.g. 12, 45, 67)
-                    if (_cards[i+1].Code - _cards[i].Code == 1) {
-                        if (_cards[i].Number != 1)
-                            _requiredCards.Add(_cards[i].Code-1);
-                        if (_cards[i+1].Number != 9)
-                            _requiredCards.Add(_cards[i+1].Code+1);
-                        continue;
-                    }
-                    // (4) Check whether there is a jumped body candidate (e.g. 13, 46, 68)
-                    else if (_cards[i+1].Code - _cards[i].Code == 2) {
-                        _requiredCards.Add(_cards[i].Code+1);
-                        continue;
-                    }
-            // (5) Case of isolated cards
-            _requiredCards.Add(_cards[i].Code);
-        }
-        _requiredCards = _requiredCards.Distinct().ToList();
-        _requiredCards.Sort();
+        _requiredCards = _manager.HandAnalyzer.FindMachi();
     }
 
 }

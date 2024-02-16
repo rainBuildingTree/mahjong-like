@@ -8,7 +8,7 @@ public class Cooldown : MonoBehaviour {
     protected PlayerDeckManager _manager;
     protected TMP_Text _text;
     protected Slider _slider;
-    protected float _cooldownTime = 3f;
+    protected float _cooldownTime = 0.1f;
 
     protected void Awake() {
         _manager = GetComponentInParent<PlayerDeckManager>();
@@ -36,14 +36,9 @@ public class Cooldown : MonoBehaviour {
                 continue;
             _manager.Hand.Cards[i].SetLockActive(false);
         }
-        while (_manager.RiichiController.IsRiichiable) {
-            yield return new WaitForEndOfFrame();
-        }
         _text.enabled = false;
         _slider.gameObject.SetActive(false);
-        while (_manager.Hand.NumCards < _manager.Hand.Cards.Length) {
-            _manager.Hand.Draw();
-        }
+
         _manager.Hand.GetRequiredCards();
         _manager.RiichiController.ProceedRiichi();
     }

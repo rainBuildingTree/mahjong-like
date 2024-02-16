@@ -18,7 +18,6 @@ public class PlayerDeckManager : MonoBehaviour {
     protected Cooldown _cooldown;
     protected HandAnalyser _handAnalyser;
     protected RiichiButton _riichiButton;
-    protected SkipButton _skipButton;
     protected RiichiController _riichiController;
     protected EnemyObjectPool _enemyPool;
     protected AttackObjectPool _attackPool;
@@ -36,7 +35,6 @@ public class PlayerDeckManager : MonoBehaviour {
     public Cooldown Cooldown { get { return _cooldown; } }
     public HandAnalyser HandAnalyser { get { return _handAnalyser; } }
     public RiichiButton RiichiButton { get { return _riichiButton; } }
-    public SkipButton SkipButton { get { return _skipButton; } }
     public RiichiController RiichiController { get { return _riichiController; } }
     public EnemyObjectPool EnemyPool { get { return _enemyPool; } }
     public AttackObjectPool AttackPool { get { return _attackPool; } }
@@ -52,7 +50,6 @@ public class PlayerDeckManager : MonoBehaviour {
         _cooldown = GetComponentInChildren<Cooldown>();
         _handAnalyser = gameObject.AddComponent<HandAnalyser>();
         _riichiButton = FindObjectOfType<RiichiButton>();
-        _skipButton = FindObjectOfType<SkipButton>();
         _riichiController = gameObject.AddComponent<RiichiController>();
         _enemyPool = FindObjectOfType<EnemyObjectPool>();
         _attackPool = FindObjectOfType<AttackObjectPool>();
@@ -68,7 +65,6 @@ public class PlayerDeckManager : MonoBehaviour {
         _merger.Init();
         _riichiController.Init();
         _riichiButton.gameObject.SetActive(false);
-        _skipButton.gameObject.SetActive(false);
     }
 
 }

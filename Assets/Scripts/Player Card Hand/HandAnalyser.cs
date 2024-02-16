@@ -15,23 +15,25 @@ public class HandAnalyser : MonoBehaviour {
     }
     public int CalculateShanten()
     {
+        // Idea from: https://hse30.tistory.com/1132
         int numCompletedBody = GetCompletedBodyCount();
         int numHead = GetHeadCount();
         int numBodyCandidate = GetBodyCandidateCount();
-
-        // (!) Shanten calculation: 8 - (num completed body) * 2 - (num body candidate)
-        if (numCompletedBody > 3)
-            return _numMaxShanten - numCompletedBody * 2 - numHead;
-        else if (numHead < 1)
-            return _numMaxShanten - numCompletedBody * 2 - numBodyCandidate + 1;
-        else
-            return _numMaxShanten - numCompletedBody * 2 - numHead - numBodyCandidate;
+         
+        if (numHead < 1) {
+            numBodyCandidate = (4 - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 4 - numCompletedBody;
+        }
+        else {
+            numBodyCandidate += numHead;
+            numBodyCandidate = (5 - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 5 - numCompletedBody;
+        }
+        return _numMaxShanten - numCompletedBody * 2 - numBodyCandidate;
     }
     public void UpdateHandData()
     {
         Reset();
         Card[] cards = _manager.Hand.Cards;
-        for (int i = 0; i < cards.Length-1; ++i)
+        for (int i = 0; i < cards.Length; ++i)
         {
             if (cards[i] == null)
                 continue;
@@ -55,6 +57,23 @@ public class HandAnalyser : MonoBehaviour {
                 machi.Add(i);
         }
         return machi;
+    }
+    public List<int> FindCardsToThrow() {
+        RestoreFromBackup();
+        int currentShanten = CalculateShanten();
+        List<int> cardIndiceToThrow = new List<int>();
+        Card[] cards = _manager.Hand.Cards;
+        for (int i = 0; i < _manager.Hand.Size; ++i) {
+            if (cards[i] == null)
+                continue;
+            if (cards[i] is MergedCard)
+                continue;
+            RestoreFromBackup();
+            _handData[cards[i].Code]--;
+            if (CalculateShanten() == currentShanten)
+                cardIndiceToThrow.Add(i);
+        }
+        return cardIndiceToThrow;
     }
 
 

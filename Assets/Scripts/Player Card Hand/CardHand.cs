@@ -70,7 +70,7 @@ public class CardHand : MonoBehaviour {
             if (_cards[i] == null)
                 continue;
             _cards[i].rectTransform.anchoredPosition = new Vector3(xPlacePosition, 0f, 0f);
-            xPlacePosition += _cards[i].rectTransform.rect.width;
+            xPlacePosition += (_cards[i].rectTransform.rect.width < _cards[i].UISize.x) ? 0 : _cards[i].UISize.x;
         }
         if (_cards[_size-1] == null)
             return;
@@ -114,11 +114,16 @@ public class CardHand : MonoBehaviour {
         _cards[index] = _cards[^1];
         _cards[^1] = null;
         Sort();
-        
+        while (_numCards < _size) {
+            _manager.Hand.Draw();
+        }
         _manager.HandAnalyser.UpdateHandData();
         int shanten = _manager.HandAnalyser.CalculateShanten();
         if (shanten == 0 && !_manager.RiichiController.IsRiichi) {
             _manager.RiichiController.SetRiichiableActive(true);
+        }
+        else if (shanten > 0) {
+            _manager.RiichiController.SetRiichiableActive(false);
         }
         _manager.Cooldown.Activate();
     }

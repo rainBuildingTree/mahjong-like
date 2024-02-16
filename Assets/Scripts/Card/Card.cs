@@ -18,6 +18,9 @@ IPointerDownHandler, IPointerUpHandler {
     protected Image imageComponent;
     protected RectTransform _rectTransform;
     protected PlayerDeckManager _deck;
+    protected bool _isDraggable = true;
+
+    public bool IsDraggable { get { return _isDraggable; } }
     
 
     // Constants
@@ -73,7 +76,7 @@ IPointerDownHandler, IPointerUpHandler {
     // Drag and Drop Interface
     public void OnDrag(PointerEventData eventData) { }
     public void OnBeginDrag(PointerEventData eventData) {
-        if (!_deck.Merger.IsMergeMode && !_isLocked) {
+        if (!_deck.Merger.IsMergeMode && _isDraggable) {
             _deck.Aim.gameObject.SetActive(true);
             _deck.Aim.RegisterMagicCard(this);
             _isDragging = true;
@@ -84,6 +87,7 @@ IPointerDownHandler, IPointerUpHandler {
             bool isTargetFound = _deck.Aim.IsTargetFound();
             if (isTargetFound) {
                 _deck.Hand.UseCard(_indexInHand);
+                _deck.RiichiController.StartRiichi();
             }
             _deck.Aim.gameObject.SetActive(false);
             _isDragging = false;
@@ -116,9 +120,11 @@ IPointerDownHandler, IPointerUpHandler {
         else {
             imageComponent.color = Color.white;
         }
+        _isDraggable = !isActive;
     }
     public void SetLockActive(bool isActive) {
         _isLocked = isActive;
+        _isDraggable = !isActive;
         _lockImage.gameObject.SetActive(isActive);
     }
 

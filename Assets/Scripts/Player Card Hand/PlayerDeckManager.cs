@@ -21,6 +21,7 @@ public class PlayerDeckManager : MonoBehaviour {
     protected RiichiController _riichiController;
     protected EnemyObjectPool _enemyPool;
     protected AttackObjectPool _attackPool;
+    protected BonusCard _bonusCard;
 
     public CardHand Hand { get { return _hand; } }
     public CardBank Bank { get { return _bank; } }
@@ -38,6 +39,7 @@ public class PlayerDeckManager : MonoBehaviour {
     public RiichiController RiichiController { get { return _riichiController; } }
     public EnemyObjectPool EnemyPool { get { return _enemyPool; } }
     public AttackObjectPool AttackPool { get { return _attackPool; } }
+    public BonusCard BonusCard { get { return _bonusCard; } }
 
     protected void Awake() {
         _hand = gameObject.AddComponent<CardHand>();
@@ -53,6 +55,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _riichiController = gameObject.AddComponent<RiichiController>();
         _enemyPool = FindObjectOfType<EnemyObjectPool>();
         _attackPool = FindObjectOfType<AttackObjectPool>();
+        _bonusCard = FindObjectOfType<BonusCard>();
     }
     protected void Start() {
         Init();

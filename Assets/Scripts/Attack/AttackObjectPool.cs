@@ -26,7 +26,8 @@ public class AttackObjectPool : MonoBehaviour {
         _elementalAtk = new int[4];
         for (int i = 0; i < 4; ++i) {
             _elementalAtk[i] = 25;
-            _attackIndicator.UpdateAttackDamage((MagicModel.ElementalAttribute)i, _elementalAtk[i]);
+            if (_attackIndicator != null)
+                _attackIndicator.UpdateAttackDamage((MagicModel.ElementalAttribute)i, _elementalAtk[i]);
         }
         
     }
@@ -54,8 +55,11 @@ public class AttackObjectPool : MonoBehaviour {
     protected void EnhancePlayer(MagicModel.ElementalAttribute attribute, int level, Transform target) {
         _elementalAtk[(int)attribute] += (level < 2) ? 1 : 10;
         _elementalAtk[3] += (level < 2) ? 0 : 4;
-        _attackIndicator.UpdateAttackDamage(attribute, _elementalAtk[(int)attribute]);
-        _attackIndicator.UpdateAttackDamage(MagicModel.ElementalAttribute.None, _elementalAtk[3]);
+        if (_attackIndicator != null)
+        {
+            _attackIndicator.UpdateAttackDamage(attribute, _elementalAtk[(int)attribute]);
+            _attackIndicator.UpdateAttackDamage(MagicModel.ElementalAttribute.None, _elementalAtk[3]);
+        }
         return;
     }
 }

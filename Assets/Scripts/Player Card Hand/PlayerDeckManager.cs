@@ -22,6 +22,7 @@ public class PlayerDeckManager : MonoBehaviour {
     protected EnemyObjectPool _enemyPool;
     protected AttackObjectPool _attackPool;
     protected BonusCard _bonusCard;
+    protected HuroController _huroController;
 
     public CardHand Hand { get { return _hand; } }
     public CardBank Bank { get { return _bank; } }
@@ -40,6 +41,7 @@ public class PlayerDeckManager : MonoBehaviour {
     public EnemyObjectPool EnemyPool { get { return _enemyPool; } }
     public AttackObjectPool AttackPool { get { return _attackPool; } }
     public BonusCard BonusCard { get { return _bonusCard; } }
+    public HuroController HuroController { get { return _huroController; } }
 
     protected void Awake() {
         _hand = gameObject.AddComponent<CardHand>();
@@ -56,6 +58,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _enemyPool = FindObjectOfType<EnemyObjectPool>();
         _attackPool = FindObjectOfType<AttackObjectPool>();
         _bonusCard = FindObjectOfType<BonusCard>();
+        _huroController = gameObject.AddComponent<HuroController>();
     }
     protected void Start() {
         Init();
@@ -68,6 +71,7 @@ public class PlayerDeckManager : MonoBehaviour {
         _merger.Init();
         _riichiController.Init();
         _riichiButton.gameObject.SetActive(false);
+        _huroController.Init();
     }
 
 }

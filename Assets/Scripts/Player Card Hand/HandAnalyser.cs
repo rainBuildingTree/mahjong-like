@@ -5,6 +5,7 @@ using UnityEngine;
 public class HandAnalyser : MonoBehaviour {
     private PlayerDeckManager _manager;
     private int _numMaxShanten = 8;
+    private int _numMergedCard = 0;
     private int[] _handData;
     private int[] _handDataBackup;
 
@@ -21,11 +22,11 @@ public class HandAnalyser : MonoBehaviour {
         int numBodyCandidate = GetBodyCandidateCount();
          
         if (numHead < 1) {
-            numBodyCandidate = (4 - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 4 - numCompletedBody;
+            numBodyCandidate = (4 - _numMergedCard - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 4 - _numMergedCard - numCompletedBody;
         }
         else {
             numBodyCandidate += numHead;
-            numBodyCandidate = (5 - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 5 - numCompletedBody;
+            numBodyCandidate = (5 - _numMergedCard - numCompletedBody > numBodyCandidate) ? numBodyCandidate : 5 - _numMergedCard - numCompletedBody;
         }
         return _numMaxShanten - numCompletedBody * 2 - numBodyCandidate;
     }
@@ -39,6 +40,7 @@ public class HandAnalyser : MonoBehaviour {
                 continue;
             if (cards[i] is MergedCard) {
                 _numMaxShanten -= 2;
+                _numMergedCard++;
                 i += 2;
                 continue;
             }
@@ -85,6 +87,7 @@ public class HandAnalyser : MonoBehaviour {
     }
     private void Reset() {
         _numMaxShanten = 8;
+        _numMergedCard = 0;
         for (int i = 0; i < _handData.Length; ++i) {
             _handData[i] = 0;
             _handDataBackup[i] = 0;

@@ -126,7 +126,7 @@ public class CardHand : MonoBehaviour {
             _manager.RiichiController.SetRiichiableActive(false);
         }
         _manager.Cooldown.Activate();
-        _manager.BonusCard.DrawNewBonusCards();
+        _manager.BonusCard.DrawNewBonusCard();
     }
     public void GetRequiredCards() {
         _requiredCards.Clear();

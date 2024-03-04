@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class BonusCard : MonoBehaviour
 {
-    private int _bonusCardcodes;
+    private int _bonusCardcode;
+    private PlayerDeckManager _playerDeckManager;
     private const int NumTotalCardKind = 34;
     [SerializeField] private Sprite[] _cardSprites;
     [SerializeField] private Image bonusCardImage;
@@ -13,6 +14,7 @@ public class BonusCard : MonoBehaviour
     public void Init()
     {
         bonusCardImage.enabled = false;
+        _playerDeckManager = FindObjectOfType<PlayerDeckManager>();
     }
     private void Awake()
     {
@@ -21,8 +23,10 @@ public class BonusCard : MonoBehaviour
 
     public void DrawNewBonusCard()
     {
-            _bonusCardcodes = Random.Range(0, NumTotalCardKind);
-            bonusCardImage.enabled = true;
-            bonusCardImage.sprite = _cardSprites[_bonusCardcodes];
+        _bonusCardcode = Random.Range(0, NumTotalCardKind);
+        bonusCardImage.enabled = true;
+        bonusCardImage.sprite = _cardSprites[_bonusCardcode];
+        _playerDeckManager.HuroController.CheckHuroability(_bonusCardcode);
+            
     }
 }

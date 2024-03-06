@@ -113,10 +113,22 @@ public class CardHand : MonoBehaviour {
         }
         _cards[index] = _cards[^1];
         _cards[^1] = null;
-        Sort();
         while (_numCards < _size) {
             _manager.Hand.Draw();
         }
+        if (_manager.HuroController.IsHuroPrepared)
+        {
+            Debug.Log("JUST DO IT");
+            _cards[^1].Initialize(_manager.HuroController.BonusCardCode);
+            _manager.Merger.ToggleMergeMode();
+            _manager.Merger.RegisterCandidate(_manager.HuroController.HurosHandIndice.Item1);
+            _manager.Merger.RegisterCandidate(_manager.HuroController.HurosHandIndice.Item2);
+            _manager.Merger.RegisterCandidate(_size - 1);
+            _manager.Merger.ToggleMergeMode();
+            _manager.HuroController.IsHuroPrepared = false;
+        }
+        Sort();
+
         _manager.HandAnalyser.UpdateHandData();
         int shanten = _manager.HandAnalyser.CalculateShanten();
         if (shanten == 0 && !_manager.RiichiController.IsRiichi) {

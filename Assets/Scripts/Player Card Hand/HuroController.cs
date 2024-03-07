@@ -49,7 +49,7 @@ public class HuroController : MonoBehaviour
         if (!_isStraightable) return;
         if (_chiableCodesList.Count == 1)
         {
-            ProcessChi();
+            ThrowCardAway(_chiableCodesList[0].Item1, _chiableCodesList[0].Item2);
             return;
         }
         for (int i = 0; i < _manager.Hand.Size; ++i)
@@ -65,12 +65,13 @@ public class HuroController : MonoBehaviour
                 _selector.Buttons[index].onClick.AddListener(() => ThrowCardAway(_chiableCodesList[index].Item1, _chiableCodesList[index].Item2));
             }
         }
+        _selector.Text.text = "Choose Cardset To Make Straight With Bonus";
 
     }
     public void PreparePon()
     {
         if (!_isTripletable) return;
-        ProcessPon();
+        ThrowCardAway(_bonusCardCode, _bonusCardCode);
 
     }
     private bool IsStraightExist(int bonusCardCode)
@@ -135,6 +136,7 @@ public class HuroController : MonoBehaviour
         }
         for (; i < _manager.Hand.Size; ++i)
         {
+            _manager.Hand.Cards[i].SetScreenerActive(false);
             if (_manager.Hand.Cards[i].Code == code1)
             {
                 _manager.Hand.Cards[i].SetScreenerActive(true);
@@ -155,13 +157,11 @@ public class HuroController : MonoBehaviour
         }
         _isHuroPrepared = true;
     }
-    private void ProcessChi()
+    public void FinishHuro()
     {
-        
-    }
-    private void ProcessPon()
-    {
-
+        _isHuroPrepared = false;
+        _selector.Backgrounds[0].gameObject.SetActive(true);
+        _selector.gameObject.SetActive(false);
     }
 
 

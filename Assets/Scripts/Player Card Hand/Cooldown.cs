@@ -8,7 +8,7 @@ public class Cooldown : MonoBehaviour {
     protected PlayerDeckManager _manager;
     protected TMP_Text _text;
     protected Slider _slider;
-    protected float _cooldownTime = 0.1f;
+    protected float _cooldownTime = 4f;
 
     protected void Awake() {
         _manager = GetComponentInParent<PlayerDeckManager>();

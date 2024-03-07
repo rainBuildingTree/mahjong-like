@@ -39,6 +39,38 @@ public class CardHand : MonoBehaviour {
         _manager.HandAnalyser.UpdateHandData();
         GetRequiredCards();
     }
+    public void ResetHand()
+    {
+        while (_numCards > 0)
+        {
+            if (_cards[_numCards - 1] is MergedCard head)
+            {
+                head = head.GetHead();
+                for (MergedCard p = head; p != null; p = head)
+                {
+                    head = head.next;
+                    _manager.MergedBank.Deposit(p);
+                    _cards[p.IndexInHand] = null;
+                    _numCards--;
+                }
+            }
+            else
+            {
+                _manager.Bank.Deposit(_cards[_numCards - 1]);
+                _cards[_numCards - 1] = null;
+                _numCards--;
+            }
+        }
+        _requiredCards.Clear();
+        for (int i = 0; i < Size; ++i)
+        {
+            Draw();
+        }
+        _numCards = _size;
+        _manager.HandAnalyser.UpdateHandData();
+        GetRequiredCards();
+        Sort();
+    }
     public void Sort() { // Doesn't sort the last card
         for (int i = 1; i < _size-1; ++i) {
             Card key = _cards[i];
@@ -86,12 +118,14 @@ public class CardHand : MonoBehaviour {
                 break;
             }
         _cards[_size-1] = _manager.Bank.Withdraw();
-        int luck = Random.Range(0, 3);
-        int randomCode = (luck < 2) ? Random.Range(0, NumTotalCardKind) : _requiredCards[Random.Range(0, _requiredCards.Count)];
+        int luck = Random.Range(0, 10);
+        int randomCode = 0;
+        if (_requiredCards.Count == 0)
+            randomCode = Random.Range(0, NumTotalCardKind);
+        else
+            randomCode = (luck < 9) ? Random.Range(0, NumTotalCardKind) : _requiredCards[Random.Range(0, _requiredCards.Count)];
         _cards[_size-1].Initialize(randomCode);
         _numCards++;
-        Sort();
-        Place();
     }
     public void UseCard(int index) {
         if (index < 0 || index >= _size)
@@ -118,14 +152,13 @@ public class CardHand : MonoBehaviour {
         }
         if (_manager.HuroController.IsHuroPrepared)
         {
-            Debug.Log("JUST DO IT");
             _cards[^1].Initialize(_manager.HuroController.BonusCardCode);
             _manager.Merger.ToggleMergeMode();
             _manager.Merger.RegisterCandidate(_manager.HuroController.HurosHandIndice.Item1);
             _manager.Merger.RegisterCandidate(_manager.HuroController.HurosHandIndice.Item2);
             _manager.Merger.RegisterCandidate(_size - 1);
             _manager.Merger.ToggleMergeMode();
-            _manager.HuroController.IsHuroPrepared = false;
+            _manager.HuroController.FinishHuro();
         }
         Sort();
 

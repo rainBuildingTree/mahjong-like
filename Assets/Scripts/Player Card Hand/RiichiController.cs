@@ -55,6 +55,17 @@ public class RiichiController : MonoBehaviour {
     }
     public void ProceedRiichi() {
         if (!_isRiichi) return;
+        _manager.HandAnalyser.UpdateHandData();
+        int shanten = _manager.HandAnalyser.CalculateShanten();
+        Debug.Log(shanten);
+        if (shanten < 0)
+        {
+            _isRiichi = false;
+            Debug.Log("Tsumo!");
+            _manager.Hand.ResetHand();
+            return;
+        }
+
         _target = _manager.EnemyPool.GetEnemyInAttribute(_manager.Hand.Cards[^1].Attribute);
         if (_target == null)
             _target = _manager.EnemyPool.ClosestEnemy(new Vector2(100f, 0f));
